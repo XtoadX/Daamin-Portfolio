@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" href="../../style.css">
+  <title>Soaring Krag - Project Details</title>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="../../index.html">Daamin Nacer</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="../../index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="../../../About/index.html">About</a></li>
+          <li class="nav-item"><a class="nav-link active" aria-current="page" href="../../../Work/index.html">Work</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="vh-50 d-flex align-items-center justify-content-center text-center bg-dark text-white">
+    <div class="container">
+      <h1 class="display-4 fw-bold">Soaring Krag</h1>
+      <p class="lead mx-auto" style="max-width: 700px;">
+        Explore the mechanics, design, and code behind my 3D Flappy Bird-inspired game, Soaring Krag.
+      </p>
+    </div>
+  </header>
+
+  <!-- Project Description -->
+  <section class="container my-5">
+    <h2>Project Overview</h2>
+    <p>
+      Soaring Krag is a 3D take on the classic Flappy Bird game. Players control Krag, a flying rock, navigating through
+      a series of rock-paper-scissors themed obstacles. This project allowed me to explore 3D movement, physics, and
+      obstacle design in Unity.
+    </p>
+  </section>
+
+  <!-- Screenshots / GIF Section -->
+  <section class="container my-5">
+    <h2>Gameplay</h2>
+    <div class="row">
+ <video src="./img/20251113-1404-31.3752368.mp4" autoplay loop muted class="img-fluid"></video>
+    </div>
+  </section>
+
+  <!-- Code Sections -->
+  <section class="container my-5">
+    <h2>Button & Menu Controller</h2>
+    <p>Handles menu navigation, starting the game, and switching between screens.</p>
+    <pre class="bg-light p-3 border"><code>
+
+public class ButtonController : MonoBehaviour
+{
+    public Button StartButton;
+    public Button InfoButton;
+    public Button BackButton;
+
+    public GameObject KragImg;
+    public GameObject TitleScreen;
+    public GameObject InfoScreen;
+
+    private AudioSource audioSource;
+
+    void Start()
+    {
+        audioSource = GetComponent<AudioSource>();
+
+        StartButton.onClick.AddListener(StartOnClick);
+        InfoButton.onClick.AddListener(InfoOnClick);
+        BackButton.onClick.AddListener(BackOnClick);
+    }
+
+    void StartOnClick()
+    {
+        audioSource.Play();
+        SceneManager.LoadScene("Game");
+    }
+
+    void InfoOnClick()
+    {
+        audioSource.Play();
+        KragImg.SetActive(false);
+        TitleScreen.SetActive(false);
+        InfoScreen.SetActive(true);
+    }
+
+    void BackOnClick()
+    {
+        audioSource.Play();
+        KragImg.SetActive(true);
+        TitleScreen.SetActive(true);
+        InfoScreen.SetActive(false);
+    }
+}
+    </code></pre>
+  </section>
+
+  <section class="container my-5">
+    <h2>Player Movement & Jump Mechanics</h2>
+    <p>Controls Krag's movement and jumping using Rigidbody physics.</p>
+    <pre class="bg-light p-3 border"><code>
+
+public class BirdController : MonoBehaviour
+{
+    private Rigidbody rb;
+    private float movementX;
+    private float movementY;
+    public GameManager gameManager;
+
+    public ParticleSystem particle;
+
+    public float speed = 10f;
+    public int jumpForce = 5;
+
+    public float JumpDelay = 0.1f;
+    private float timer = 100f;
+
+    private AudioSource audioSource;
+
+    void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+        audioSource = GetComponent<AudioSource>();
+    }
+
+    private void FixedUpdate()
+    {
+        Vector3 movement = new Vector3(movementX, 0.0f, movementY);
+        rb.AddForce(movement * speed);
+    }
+
+    void OnMove(InputValue movementValue)
+    {
+        Vector2 movementVector = movementValue.Get<Vector2>();
+        movementX = movementVector.x;
+        movementY = movementVector.y;
+    }
+
+    private void OnJump(InputValue jumpValue)
+    {
+        timer += 20f * Time.deltaTime;
+        if (timer >= JumpDelay)
+        {
+            audioSource.Play();
+            Vector3 jump = new Vector3(0.0f, jumpForce, 0.0f);
+            rb.velocity = jump;
+            particle.Play();
+            timer = 0;
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("ground") || collision.gameObject.CompareTag("obstacle"))
+        {
+            if (gameManager != null) gameManager.GameOver();
+            else Debug.LogError("GameManager not assigned");
+        }
+    }
+
+    private void OnTriggerEnter(Collider collision)
+    {
+        if (collision.gameObject.CompareTag("point"))
+        {
+            if (gameManager != null)
+            {
+                gameManager.UpdatePoints();
+                collision.gameObject.SetActive(false);
+            }
+            else Debug.LogError("GameManager not assigned");
+        }
+    }
+}
+    </code></pre>
+  </section>
+
+  <section class="container my-5">
+    <h2>Camera Controller</h2>
+    <p>Tracks the player's movement and can be expanded for bounds or smoothing.</p>
+    <pre class="bg-light p-3 border"><code>
+
+public class CameraManager : MonoBehaviour
+{
+    public Transform target;
+    Camera cam;
+    private float boundX;
+    private float boundY;
+
+    void Start()
+    {
+        cam = GetComponent<Camera>();
+    }
+
+    void Update()
+    {
+        // Future camera tracking code
+    }
+}
+    </code></pre>
+  </section>
+
+  <section class="container my-5">
+    <h2>Game Management & Scoring</h2>
+    <p>Manages the game state, points, high scores, and audio cues.</p>
+    <pre class="bg-light p-3 border"><code>
+
+public class GameManager : MonoBehaviour
+{
+    public Rigidbody bird;
+    private bool gameStarted = false;
+    private bool gameOver = false;
+    private int points = 0;
+    private int highScore = 0;
+
+    public GameObject loseText;
+    public TextMeshProUGUI pointText;
+    public TextMeshProUGUI highScoreText;
+
+    private AudioSource audioSource;
+    public BackgroundMusic backgroundMusic;
+    public AudioClip loseMusic;
+    public AudioClip HighScoreMusic;
+    public PipeSpawner pipeSpawner;
+
+    void Start()
+    {
+        audioSource = GetComponent<AudioSource>();
+        Time.timeScale = 0f;
+        bird.useGravity = false;
+        points = 0;
+        highScore = PlayerPrefs.GetInt("HighScore", 0);
+        highScoreText.text = "High Score: " + highScore;
+        if (backgroundMusic != null) backgroundMusic.GetComponent<AudioSource>().Play();
+    }
+
+    void Update()
+    {
+        if (!gameStarted && (Keyboard.current.spaceKey.wasPressedThisFrame || Keyboard.current.wKey.wasPressedThisFrame))
+        {
+            bird.useGravity = true;
+            gameStarted = true;
+            Time.timeScale = 1f;
+        }
+
+        if (gameOver && Keyboard.current.spaceKey.wasPressedThisFrame)
+        {
+            Time.timeScale = 1f;
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+    }
+
+    public void GameOver()
+    {
+        if (backgroundMusic != null) backgroundMusic.GetComponent<AudioSource>().Stop();
+
+        if (audioSource != null && loseMusic != null)
+        {
+            audioSource.clip = loseMusic;
+            audioSource.Play();
+        }
+
+        loseText.SetActive(true);
+        gameOver = true;
+        Time.timeScale = 0f;
+
+        if (points > highScore)
+        {
+            highScore = points;
+            PlayerPrefs.SetInt("HighScore", highScore);
+            highScoreText.text = "High Score: " + highScore;
+
+            if (audioSource != null && HighScoreMusic != null)
+            {
+                audioSource.clip = HighScoreMusic;
+                audioSource.Play();
+            }
+        }
+        else if (audioSource != null && loseMusic != null)
+        {
+            audioSource.clip = loseMusic;
+            audioSource.Play();
+        }
+
+        highScoreText.text = "High Score: " + highScore;
+    }
+
+    public void UpdatePoints()
+    {
+        if (audioSource != null) audioSource.Play();
+        points++;
+        pointText.text = "Points: " + points;
+        if (pipeSpawner != null) pipeSpawner.SetDifficulty(points);
+    }
+}
+    </code></pre>
+  </section>
+
+  <section class="container my-5">
+    <h2>Pipes & Obstacles</h2>
+    <p>Spawn and move obstacles with increasing difficulty over time.</p>
+    <pre class="bg-light p-3 border"><code>
+
+
+public class Pipe : MonoBehaviour
+{
+    public float speed = 5f;
+    private float shrinktime = 0.5f;
+
+    void Update()
+    {
+        transform.Translate(Vector3.up * speed * Time.deltaTime);
+        if (transform.position.z < -5f) StartCoroutine(ShrinkAndDestroy());
+    }
+
+    public void SetSpeed(float newSpeed) { speed = newSpeed; }
+
+    private IEnumerator ShrinkAndDestroy()
+    {
+        Vector3 originalScale = transform.localScale;
+        float elapsed = 0f;
+
+        while (elapsed < shrinktime)
+        {
+            transform.localScale = Vector3.Lerp(originalScale, Vector3.zero, elapsed / shrinktime);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        transform.localScale = Vector3.zero;
+        Destroy(gameObject);
+    }
+}
+
+public class PipeSpawner : MonoBehaviour
+{
+    public GameObject pipePrefab;
+    public float spawnInterval = 5f;
+    public float gapHeight = 3f;
+    public float gapRangeY = 2f;
+    public Transform spawnPoint;
+
+    private float timer;
+
+    public float minSpawnInterval = 2f;
+    public float minGapHeight = 2f;
+
+    public float pipeSpeed = 5f;
+    public float maxPipeSpeed = 12f;
+
+    void Update()
+    {
+        timer += Time.deltaTime;
+        if (timer >= spawnInterval)
+        {
+            SpawnPipes();
+            timer = 0f;
+        }
+    }
+
+    public void SetDifficulty(int points)
+    {
+        int level = points / 5;
+        spawnInterval = Mathf.Max(5f - (level * 0.3f), minSpawnInterval);
+        gapHeight = Mathf.Max(3f - (level * 0.2f), minGapHeight);
+        pipeSpeed = Mathf.Min(5f + level * 0.6f, maxPipeSpeed);
+    }
+
+    void SpawnPipes()
+    {
+        float gapYPosition = Random.Range(-gapRangeY, gapRangeY);
+        int gapPillarIndex = Random.Range(0, 3);
+
+        switch (gapPillarIndex)
+        {
+            case 0: SpawnPipeWithGap(0, gapYPosition); break;
+            default: SpawnPipeSolid(0); break;
+        }
+
+        switch (gapPillarIndex)
+        {
+            case 1: SpawnPipeWithGap(-3.5f, gapYPosition); break;
+            default: SpawnPipeSolid(-3.5f); break;
+        }
+
+        switch (gapPillarIndex)
+        {
+            case 2: SpawnPipeWithGap(-7f, gapYPosition); break;
+            default: SpawnPipeSolid(-7f); break;
+        }
+    }
+
+    void SpawnPipeWithGap(float xOffset, float gapYPosition)
+    {
+        int TopOrBottomIndex = Random.Range(0, 2);
+        Vector3 pipePos = Vector3.zero;
+        Vector3 bottomPosition = spawnPoint.position + new Vector3(xOffset, (gapYPosition - gapHeight / 2) - 15, 0);
+        Vector3 topPosition = spawnPoint.position + new Vector3(xOffset, (gapYPosition - gapHeight), 0);
+
+        pipePos = (TopOrBottomIndex == 0) ? bottomPosition : topPosition;
+
+        GameObject pipe = Instantiate(pipePrefab, pipePos, Quaternion.Euler(0f, -90f, 90f));
+        Pipe pipeScript = pipe.GetComponent<Pipe>();
+        if (pipeScript != null) pipeScript.SetSpeed(pipeSpeed);
+    }
+
+    void SpawnPipeSolid(float xOffset)
+    {
+        Vector3 bottomPosition = spawnPoint.position + new Vector3(xOffset, -10, 0);
+        GameObject pipe = Instantiate(pipePrefab, bottomPosition, Quaternion.Euler(0f, -90f, 90f));
+        Pipe pipeScript = pipe.GetComponent<Pipe>();
+        if (pipeScript != null) pipeScript.SetSpeed(pipeSpeed);
+    }
+}
+    </code></pre>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer bg-dark text-white py-4">
+    <div class="container text-center">
+      <a class="nav-link btn btn-primary text-white mb-2" href="https://daamin.itch.io/soaring-krag"
+        target="_blank">Play Now</a>
+      <p>&copy; 2025 Daamin Nacer. All rights reserved.</p>
+    </div>
+  </footer>
+
+</body>
+
+</html>

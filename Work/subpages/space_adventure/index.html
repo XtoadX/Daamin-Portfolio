@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" href="../../style.css">
+  <title>Space Adventure - Project Details</title>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="../../index.html">Daamin Nacer</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="../../index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="../../../About/index.html">About</a></li>
+          <li class="nav-item"><a class="nav-link active" aria-current="page" href="../../../Work/index.html">Work</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="vh-50 d-flex align-items-center justify-content-center text-center bg-dark text-white">
+    <div class="container">
+      <h1 class="display-4 fw-bold">Space Adventure</h1>
+      <p class="lead mx-auto" style="max-width: 700px;">
+        Dive deeper into the code, mechanics, and creative process behind my Space Adventure project.
+      </p>
+    </div>
+  </header>
+
+  <!-- Project Description -->
+  <section class="container my-5">
+    <h2>Project Overview</h2>
+    <p>
+      Space Adventure is a modern reimagining of the classic Space Invaders game. Built in JavaScript with p5.js, it combines classic arcade mechanics with upgrades like shields, UFOs, and dynamic difficulty.
+    </p>
+  </section>
+
+  <!-- Code Section 1: Gameplay Mechanics -->
+  <section class="container my-5">
+    <h2>Gameplay Mechanics</h2>
+    <p>The core player interactions: moving left/right and shooting bullets, plus invader movement and attacks.</p>
+   <div class="my-3 text-center">
+      <img src="./img/movement.gif" alt="Movement   " class="img-fluid">
+     
+    </div>
+    <pre class="bg-light p-3 border"><code>
+function keyboardControls() {
+  if (keyIsDown(LEFT_ARROW)) player.move(true);
+  if (keyIsDown(RIGHT_ARROW)) player.move(false);
+  if (keyIsDown(32)) player.shoot();
+}
+function createBullet(x, y, img) {
+  let bulletPrefab = new Sprite(x, y, img.width*scale, img.height*scale, img);
+  bulletPrefab.vel = createVector(0, -scale*15);
+  bulletPrefab.update = function() { this.pos.add(this.vel); };
+  return bulletPrefab;
+}
+    </code></pre>
+  </section>
+
+  <!-- Code Section 2: Collision Detection -->
+  <section class="container my-5">
+    <h2>Collision Detection</h2>
+    <p>This system checks collisions between bullets, players, invaders, UFOs, and shields, applying damage and updating scores.</p>
+    <pre class="bg-light p-3 border"><code>
+function checkAllCollisions() {
+  invaderBullets.forEach(bullet => {
+    if (!player.invincible && player.intersects(bullet)) {
+      playerHitSound.play();
+      hit();
+      bullet.deadMarked = true;
+    }
+  });
+  bullets.forEach(bullet => {
+    invaders.forEach(invader => {
+      if (bullet.intersects(invader)) {
+        invader.health -= bullet.damage;
+        bullet.deadMarked = true;
+      }
+    });
+  });
+}
+    </code></pre>
+  </section>
+
+  <!-- Code Section 3: Waves & Difficulty -->
+  <section class="container my-5">
+    <h2>Wave & Difficulty System</h2>
+    <p>Dynamic waves with increasing difficulty, health, and invader shoot speed.</p>
+     <div class="my-3 text-center">
+      <img src="./img/dif.png" alt="Difficulty System" class="img-fluid">
+     
+    </div>
+    <pre class="bg-light p-3 border"><code>
+function makeWave(difficulty) {
+  let config = [];
+  switch(difficulty) {
+    case 2: config = [{canShoot:false,extraHealth:0},{canShoot:true,extraHealth:0}]; break;
+    case 3: config = [{canShoot:false,extraHealth:0},{canShoot:true,extraHealth:0}]; break;
+    default: config = [{canShoot:false,extraHealth:0},{canShoot:true,extraHealth:0}];
+  }
+  return config;
+}
+function dificultyHigher() {
+  invaderHealth++;
+  MOVE_INTERVAL = max(MOVE_INTERVAL-1, 1);
+  dificultyLevel++;
+  enemyShootFaster();
+}
+    </code></pre>
+  </section>
+
+  <!-- Code Section 4: Shields & UFOs -->
+  <section class="container my-5">
+    <h2>Shields & UFO Mechanics</h2>
+    <p>Shields absorb damage, UFOs provide bonus points, and invaders interact with them as well.</p>
+    <pre class="bg-light p-3 border"><code>
+function shielSpawn() {
+  for (let i=0; i<4; i++){
+    shields.push(new Shield(x, y, shieldWidth, shieldHeight, shieldImg));
+  }
+}
+function ufoSpawn(frames) {
+  setTimeout(() => { ufos.push(new Ufo(x, y, ufoWidth, ufoHeight, ufoImg)); }, frames*100);
+}
+    </code></pre>
+  </section>
+
+  <!-- Code Section 5: Visual & Audio Feedback -->
+  <section class="container my-5">
+    <h2>Visual & Audio Feedback</h2>
+    <p>Screen shake, particle effects, and sound effects enhance player experience.</p>
+    <pre class="bg-light p-3 border"><code>
+function screenShake() {
+  shakeing = true;
+  setTimeout(() => { shakeing = false; shake.x=0; shake.y=0; }, 300);
+}
+function hit() {
+  playerLives--;
+  player.invincible = true;
+}
+    </code></pre>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer bg-dark text-white py-4">
+    <div class="container text-center">
+          <a class="nav-link btn btn-primary text-white mb-2" href="../../../Games/Space Adventure/index.html"
+        target="_blank">Play Now</a>
+      <p>&copy; 2025 Daamin Nacer. All rights reserved.</p>
+    </div>
+  </footer>
+
+</body>
+
+</html>

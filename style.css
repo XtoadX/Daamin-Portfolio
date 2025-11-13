@@ -36,17 +36,17 @@ body {
 }
 
 #parallax-world-of-ugg .parallax-one {
-  background-image: url(https://glr.cms.araweb.nl/sites/default/files/assets/images/2021/technology-1283624_1920.jpg);
+  background-image: url(./images/soaring_krag.png);
   background-position: center center;
 }
 
 #parallax-world-of-ugg .parallax-two {
-  background-image: url(https://storage.googleapis.com/production-startlogic-v1-0-5/285/403285/PUM6xM2I/1f8ca6df8c3e48a69954c1674be1cc14);
+  background-image: url(https://images.stockcake.com/public/c/0/f/c0f725a5-6353-4eaf-93a7-f102d58c7355_large/futuristic-vr-headset-stockcake.jpg);
   background-position: center center;
 }
 
 #parallax-world-of-ugg .parallax-three {
-  background-image: url(https://assets.reedpopcdn.com/unity-logo_teCooZK.jpg/BROK/thumbnail/1600x900/quality/100/unity-logo_teCooZK.jpg);
+  background-image: url(./images/space_adventure.png);
   background-position: center center;
 }
 

@@ -1,0 +1,163 @@
+@font-face {
+  font-family: 'CustomFont'; /* Name your font family */
+  src: url('./assets/fonts/PressStart2P-Regular.ttf'); /* Locate the .ttf file within your directory*/
+}
+
+html, body {
+  font-family: 'VT323', monospace ; 
+  margin: 0;
+  padding: 0;
+}
+
+canvas {
+  display: block;
+}
+button {
+	background: #7C7C7C;
+	border-bottom: 6px inset rgba(0,0,0,.5);
+	border-left: 6px inset rgba(0,0,0,.5);
+	border-right: 6px inset rgba(255,255,255,.5);
+	border-top: 6px inset rgba(255,255,255,.5);
+	box-sizing: border-box;
+	color: white;
+	cursor: pointer;
+	display: inline-block;
+	font-size: 2.2rem;
+	margin: 1rem;
+	min-width: 200px;
+	padding: .5rem;
+	text-transform: uppercase;
+	width: auto;
+	
+	&:focus,
+	&:hover {
+		background: #BCBCBC;
+	}
+}
+.playButton{
+  background: #00ff2f;
+  font-family: 'CustomFont';
+  width: 30%;
+}
+.playButton:hover{
+  background: #008018;
+}
+.leaderButton{
+  background: #bbff00;
+  font-family: 'CustomFont';
+  width: 30%;
+}
+.leaderButton:hover{
+  background: #7daa00;
+}
+.guideButton{
+  background: #ffdd00;
+  font-family: 'CustomFont';
+  width: 30%;
+}
+.guideButton:hover{
+  background: #958100;
+}
+.mainButton{
+  background: #ff0000;
+  font-family: 'CustomFont';
+}
+.mainButton:hover{
+  background: #a90000;
+}
+.textButton{
+  background: linear-gradient( 99.9deg, rgba(27,24,31,1) 21.2%, rgba(50,4,89,1) 84.8% );
+  font-family: 'CustomFont';
+  width: min-content;
+}
+.textButton:hover{
+  background: linear-gradient( 99.9deg, rgba(50,4,89,1) 21.2%,rgba(27,24,31,1)  84.8% );
+}
+
+.normalTextButton{
+  background: #ff0000;
+  font-family: 'CustomFont';
+  width: 15%;
+
+}
+.normalTextButton:hover{
+  background: #9f0000;
+}
+.easyTextButton{
+  background: #00ff15;
+  font-family: 'CustomFont';
+  width: 15%;
+}
+.easyTextButton:hover{
+  background: #00960d;
+}
+.hardTextButton{
+  background: #0033ff;
+  font-family: 'CustomFont';
+  width: 15%;
+}
+.hardTextButton:hover{
+  background: #001d93;
+}
+.damageTextButton{
+  background: #ff0000;
+  font-family: 'CustomFont';
+  font-size: x-large;
+  width: 35%;
+}
+.damageTextButton:hover{
+  background: #9f0000;
+}
+.healthTextButton{
+  background: #00ff15;
+  font-family: 'CustomFont';
+  font-size: x-large;
+  width: 35%;
+}
+.healthTextButton:hover{
+  background: #00960d;
+}
+.speedTextButton{
+  background: #0033ff;
+  font-family: 'CustomFont';
+  font-size: x-large;
+
+  width: 35%;
+}
+.speedTextButton:hover{
+  background: #001d93;
+}
+.bSpeedTextButton{
+  background: #e600ff;
+  font-family: 'CustomFont';
+  font-size: x-large;
+  width: 35%;
+}
+.bSpeedTextButton:hover{
+  background: #7d008a;
+}
+.fireTextButton{
+  background: #ffd500;
+  font-family: 'CustomFont';
+  font-size: x-large;
+  width: 35%;
+}
+.fireTextButton:hover{
+  background: #967d00;
+}
+
+  
+input {
+  outline: none;
+  margin: 15px;
+  padding: 7px 0 7px 14px;
+  border: 3px solid rgb(150, 150, 150);
+  box-shadow: 0px 0px 0px 1px rgb(90, 90, 90),
+    inset 0px 0px 0px 1px rgb(90, 90, 90),
+    1px 2px 0px 2px rgb(100, 100, 100);
+  border-radius: 0.3em;
+  color: rgb(50, 50, 50);
+  font-family: "M PLUS 1p", sans-serif;
+  font-weight: 700;
+  font-size: 1.3em;
+}
